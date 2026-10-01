@@ -1,13 +1,39 @@
 // Mobile Navigation
-document.querySelectorAll('.nav-toggle').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    var links = document.querySelector('.nav-links');
-    if (links) {
-      var open = links.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+(function () {
+  var btn = document.querySelector('.nav-toggle');
+  var links = document.querySelector('.nav-links');
+  if (!btn || !links) return;
+
+  function setOpen(open) {
+    links.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    setOpen(!links.classList.contains('open'));
+  });
+
+  // Tippen/Klicken außerhalb schließt das Menü
+  document.addEventListener('click', function (e) {
+    if (links.classList.contains('open') && !links.contains(e.target) && e.target !== btn) {
+      setOpen(false);
     }
   });
-});
+
+  // Esc schließt das Menü
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && links.classList.contains('open')) {
+      setOpen(false);
+      btn.focus();
+    }
+  });
+
+  // Klick auf einen Link im Menü schließt es (z. B. Anker/Reload derselben Seite)
+  links.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { setOpen(false); });
+  });
+})();
 
 // Rotierendes Hero-Wort (21st.dev "Animated Hero"-Muster)
 (function () {
