@@ -132,3 +132,29 @@ document.querySelectorAll('.copy-btn').forEach(function (btn) {
     });
   }
 })();
+
+// Bauablauf: Bilder weich überblenden, Punkte zum Anspringen, Pause bei Berührung
+(function () {
+  document.querySelectorAll('[data-process]').forEach(function (box) {
+    var imgs = box.querySelectorAll('.process-stage img');
+    var dots = box.querySelectorAll('.process-dots button');
+    var num = box.querySelector('.process-num');
+    var name = box.querySelector('.process-name');
+    var i = 0, timer = null;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function show(n) {
+      i = (n + imgs.length) % imgs.length;
+      imgs.forEach(function (im, k) { im.classList.toggle('is-active', k === i); });
+      dots.forEach(function (d, k) { d.classList.toggle('is-active', k === i); });
+      num.textContent = (i + 1) + ' / ' + imgs.length;
+      name.textContent = imgs[i].dataset.step;
+    }
+    function start() { if (reduce || timer) return; timer = setInterval(function () { show(i + 1); }, +box.dataset.interval || 3200); }
+    function stop() { clearInterval(timer); timer = null; }
+    dots.forEach(function (d, k) { d.addEventListener('click', function () { show(k); stop(); start(); }); });
+    box.addEventListener('pointerenter', stop); box.addEventListener('pointerleave', start);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { e[0].isIntersecting ? start() : stop(); }, { threshold: .4 }).observe(box);
+    } else { start(); }
+  });
+})();
