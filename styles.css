@@ -340,3 +340,27 @@ footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:
   .foot-grid{grid-template-columns:1fr}
   .hero-media img{height:300px}
 }
+
+/* Einwilligungs-Hinweis (Statistik) */
+.consent{
+  position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:80;
+  max-width:460px;padding:20px;border-radius:16px;
+  background:var(--ink-2);color:var(--fg-inv);border:1px solid var(--line-inv);
+  box-shadow:0 18px 48px -12px rgba(0,0,0,.6);font-size:14.5px;line-height:1.55;
+}
+.consent[hidden]{display:none}
+.consent h2{font-family:var(--font-display);font-size:18px;font-weight:700;margin:0 0 8px}
+.consent p{margin:0 0 16px;color:var(--muted-inv)}
+.consent a{color:var(--fg-inv);text-underline-offset:3px}
+.consent-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.consent-btn{
+  justify-content:center;padding-inline:12px;min-width:0;
+  background:var(--ink-3);color:var(--fg-inv);border:1px solid var(--muted-inv);
+}
+.consent-btn:hover{border-color:var(--fg-inv)}
+
+/* Telefon-Links */
+a[href^="tel:"]{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s}
+a[href^="tel:"]:hover{color:var(--accent-bright);border-bottom-color:currentColor}
+.legal-card a[href^="tel:"]{border-bottom-color:var(--line)}
+.legal-card a[href^="tel:"]:hover{color:var(--accent)}
