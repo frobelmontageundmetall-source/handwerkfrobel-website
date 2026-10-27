@@ -319,3 +319,64 @@ document.querySelectorAll('.copy-btn').forEach(function (btn) {
     });
   }
 })();
+
+// PU-Check (pu-boden.html): Kurzformular aufklappen, per #pu-check direkt geöffnet (QR-Code Broschüre)
+(function () {
+  var form = document.getElementById('pu-check-form');
+  var toggle = document.getElementById('pu-check-toggle');
+  if (!form || !toggle) return;
+  var desc = form.elements['beschreibung'];
+  var mailBtn = document.getElementById('pu-check-mail');
+
+  function setOpen(open, scroll) {
+    form.hidden = !open;
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      if (scroll) document.getElementById('pu-check').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(function () { desc.focus({ preventScroll: true }); }, 250);
+    }
+  }
+
+  toggle.addEventListener('click', function () { setOpen(form.hidden, false); });
+  form.querySelector('.pu-check-close').addEventListener('click', function () {
+    setOpen(false);
+    toggle.focus();
+  });
+
+  if (location.hash === '#pu-check') setOpen(true, true);
+  window.addEventListener('hashchange', function () {
+    if (location.hash === '#pu-check') setOpen(true, true);
+  });
+
+  function buildText() {
+    var get = function (name) {
+      var f = form.elements[name];
+      return f && f.value ? f.value.trim() : '';
+    };
+    var lines = ['Hallo Handwerkfrobel, passt ein fugenloser PU-Boden zu meinem Projekt?', ''];
+    lines.push('Leistung: Fugenlose Bodenbeschichtung (PU)');
+    if (get('flaeche')) lines.push('Fläche: ca. ' + get('flaeche') + ' m²');
+    lines.push('Ort/Stadtteil: ' + get('ort'));
+    lines.push('', 'Beschreibung: ' + get('beschreibung'));
+    return lines.join('\n');
+  }
+
+  function track(method) {
+    trackEvent('contact_form_submit', { form_id: 'pu-check-form', method: method, transport_type: 'beacon' });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    track('whatsapp');
+    window.location.href = 'https://wa.me/4915142814446?text=' + encodeURIComponent(buildText());
+  });
+
+  if (mailBtn) {
+    mailBtn.addEventListener('click', function () {
+      if (!form.reportValidity()) return;
+      track('email');
+      window.location.href = 'mailto:info@handwerkfrobel.de?subject=' +
+        encodeURIComponent('PU-Check: Anfrage über die Website') + '&body=' + encodeURIComponent(buildText());
+    });
+  }
+})();

@@ -231,6 +231,20 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.12;text-wrap:balance;marg
 .cta-band p{margin:8px 0 0;color:var(--muted-inv)}
 .cta-band .actions{position:relative;display:flex;flex-wrap:wrap;gap:13px}
 
+/* PU-Check: Kurzformular unter dem CTA-Band (pu-boden.html#pu-check) */
+#pu-check{scroll-margin-top:90px}
+.pu-check-form{position:relative;margin-top:16px}
+.pu-check-form .field{margin-bottom:16px}
+.pu-check-form .form-actions{margin-top:8px}
+.pu-check-form .btn-ghost{border-color:var(--line);color:var(--fg)}
+.pu-check-form .btn-ghost:hover{border-color:var(--fg)}
+.pu-check-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pu-check-close{
+  position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:10px;
+  border:1px solid var(--line);background:#fff;color:var(--fg);font-size:24px;line-height:1;cursor:pointer;
+}
+@media (max-width:600px){.pu-check-row{grid-template-columns:1fr;gap:0}}
+
 /* ---------- Footer ---------- */
 footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:clamp(40px,6vw,64px) 28px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:clamp(24px,4vw,48px);margin-bottom:40px}

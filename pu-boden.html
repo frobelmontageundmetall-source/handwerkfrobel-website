@@ -172,16 +172,39 @@
 
 <section class="section on-dark">
   <div class="container">
-    <div class="cta-band">
+    <div class="cta-band" id="pu-check">
       <div>
         <h2>Passt ein PU-Boden zu Ihrem Projekt?</h2>
         <p>Untergrund, Bauzustand und Nutzung entscheiden. Anhand weniger Eckdaten prüfen wir Ihr Projekt — unverbindlich.</p>
       </div>
       <div class="actions">
-        <a class="btn btn-primary" href="kontakt.html">Projekt prüfen lassen <span class="arr">→</span></a>
+        <button type="button" class="btn btn-primary" id="pu-check-toggle" aria-expanded="false" aria-controls="pu-check-form">Projekt prüfen lassen <span class="arr">→</span></button>
         <a class="btn btn-wa" href="https://wa.me/4915142814446?text=Hallo%2C%20passt%20ein%20fugenloser%20PU-Boden%20zu%20meinem%20Projekt%3F%20Hier%20ein%20paar%20Eckdaten%3A">WhatsApp Anfrage</a>
       </div>
     </div>
+
+    <form id="pu-check-form" class="form-card pu-check-form" hidden>
+      <button type="button" class="pu-check-close" aria-label="Formular schließen">×</button>
+      <div class="field">
+        <label for="pc-beschreibung">Kurzbeschreibung Ihres Projekts *</label>
+        <textarea id="pc-beschreibung" name="beschreibung" required placeholder="Räume (z. B. Wohnbereich, Küche), Altbau / Neubau, Untergrund (z. B. Fliesen), Besonderheiten"></textarea>
+      </div>
+      <div class="pu-check-row">
+        <div class="field">
+          <label for="pc-flaeche">Fläche ca. (m²)</label>
+          <input type="number" id="pc-flaeche" name="flaeche" min="1" placeholder="z. B. 60" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="pc-ort">Ort / Stadtteil *</label>
+          <input type="text" id="pc-ort" name="ort" required placeholder="z. B. Köln-Bayenthal">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-wa">Einschätzung per WhatsApp anfordern</button>
+        <button type="button" class="btn btn-ghost" id="pu-check-mail">Lieber per E-Mail</button>
+      </div>
+      <p class="form-note" id="pu-check-status">Kostenlos &amp; unverbindlich · Antwort i. d. R. innerhalb von 24 Std.</p>
+    </form>
   </div>
 </section>
 
