@@ -197,6 +197,8 @@ function trackEvent(name, params) {
   var words;
   try { words = JSON.parse(el.dataset.words || '[]'); } catch (e) { words = []; }
   if (words.length < 2) return;
+  // Bei "Bewegung reduzieren" bleibt das erste Wort stehen (kein automatischer Wechsel)
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var i = 0;
   setInterval(function () {
     i = (i + 1) % words.length;
