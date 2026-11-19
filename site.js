@@ -1,13 +1,29 @@
-// Statistik (Google Analytics 4) – wird erst nach Einwilligung geladen
+// Einwilligung (Google Analytics 4 und Google Ads) – der Google-Tag wird erst nach Einwilligung geladen
 var GA_MEASUREMENT_ID = 'G-8TN4KR48EF';
-var CONSENT_KEY = 'frobel_stat_consent';
+var ADS_ID = 'AW-17775235346';
+// Conversion-Label der Google-Ads-Conversion (aus dem Ereignis-Snippet: send_to 'AW-17775235346/LABEL').
+// Solange das Label leer ist, wird keine Ads-Conversion gesendet.
+var ADS_CONVERSION_LABEL = 'mh6tCPvr4rsdEJKi8ptC';
+var CONSENT_KEY = 'frobel_consent_v2';
+
+// Aktuelle Auswahl der Besucher (Standard: nichts erlaubt)
+var frobelConsent = { stat: false, ads: false };
 
 // Ereignis senden. Tut nichts, solange gtag nicht geladen ist (also ohne Einwilligung).
 function trackEvent(name, params) {
   try {
-    if (typeof window.gtag === 'function') {
+    if (typeof window.gtag !== 'function') return;
+    if (frobelConsent.stat) {
       // send_to: Ereignisse nur an GA4 senden, nicht an weitere mit dem Google-Tag verbundene Ziele
       window.gtag('event', name, Object.assign({ send_to: GA_MEASUREMENT_ID }, params || {}));
+    }
+    // Google-Ads-Conversion: nur mit Werbe-Einwilligung, nur bei WhatsApp-Klick und Anfrage
+    if (frobelConsent.ads && ADS_CONVERSION_LABEL &&
+        (name === 'whatsapp_click' || name === 'contact_form_submit')) {
+      window.gtag('event', 'conversion', {
+        send_to: ADS_ID + '/' + ADS_CONVERSION_LABEL,
+        transport_type: 'beacon'
+      });
     }
   } catch (e) { /* Tracking darf die Seite nie stören */ }
 }
@@ -16,53 +32,85 @@ function trackEvent(name, params) {
   var banner = null;
 
   function readConsent() {
-    try { return window.localStorage.getItem(CONSENT_KEY); } catch (e) { return null; }
+    try {
+      var raw = window.localStorage.getItem(CONSENT_KEY);
+      if (!raw) return null;
+      var c = JSON.parse(raw);
+      return { stat: c.stat === true, ads: c.ads === true };
+    } catch (e) { return null; }
   }
-  function writeConsent(value) {
-    try { window.localStorage.setItem(CONSENT_KEY, value); } catch (e) { /* ohne Speicher: Hinweis erscheint erneut */ }
+  function writeConsent(c) {
+    try { window.localStorage.setItem(CONSENT_KEY, JSON.stringify(c)); } catch (e) { /* ohne Speicher: Hinweis erscheint erneut */ }
   }
 
-  function loadAnalytics() {
-    if (window.__frobelGaLoaded || !GA_MEASUREMENT_ID) return;
-    window.__frobelGaLoaded = true;
-    window['ga-disable-' + GA_MEASUREMENT_ID] = false;
+  function ensureGtag(firstId) {
+    if (window.__frobelGtagLoaded) return;
+    window.__frobelGtagLoaded = true;
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };
+    // Standard: alles verweigert; erst die Auswahl der Besucher schaltet Bereiche frei
     window.gtag('consent', 'default', {
       ad_storage: 'denied',
       ad_user_data: 'denied',
       ad_personalization: 'denied',
-      analytics_storage: 'granted'
+      analytics_storage: 'denied'
     });
     window.gtag('js', new Date());
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false
-    });
     var s = document.createElement('script');
     s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_MEASUREMENT_ID);
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(firstId);
     document.head.appendChild(s);
   }
 
-  function stopAnalytics() {
-    window['ga-disable-' + GA_MEASUREMENT_ID] = true;
-    if (typeof window.gtag === 'function') {
-      window.gtag('consent', 'update', { analytics_storage: 'denied' });
-    }
-    // Bereits gesetzte Analytics-Cookies entfernen
+  // Bereits gesetzte Cookies der abgewählten Bereiche entfernen
+  function removeCookies(c) {
     var host = window.location.hostname;
     var parts = host.split('.');
     var domains = ['', host, '.' + host];
     if (parts.length > 2) domains.push('.' + parts.slice(-2).join('.'));
-    document.cookie.split(';').forEach(function (c) {
-      var name = c.split('=')[0].trim();
-      if (name === '_ga' || name === '_gid' || name.indexOf('_ga_') === 0 || name.indexOf('_gat') === 0) {
+    document.cookie.split(';').forEach(function (cookie) {
+      var name = cookie.split('=')[0].trim();
+      var isStat = name === '_ga' || name === '_gid' || name.indexOf('_ga_') === 0 || name.indexOf('_gat') === 0;
+      var isAds = name.indexOf('_gcl_') === 0;
+      if ((isStat && !c.stat) || (isAds && !c.ads)) {
         domains.forEach(function (d) {
           document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + (d ? '; domain=' + d : '');
         });
       }
     });
+  }
+
+  function applyConsent(c) {
+    frobelConsent = c;
+    window['ga-disable-' + GA_MEASUREMENT_ID] = !c.stat;
+    if (c.stat || c.ads) {
+      ensureGtag(c.stat ? GA_MEASUREMENT_ID : ADS_ID);
+      window.gtag('consent', 'update', {
+        analytics_storage: c.stat ? 'granted' : 'denied',
+        ad_storage: c.ads ? 'granted' : 'denied',
+        ad_user_data: c.ads ? 'granted' : 'denied',
+        ad_personalization: 'denied' // keine personalisierte Werbung, nur Erfolgsmessung
+      });
+      if (c.stat && !window.__frobelGaConfigured) {
+        window.__frobelGaConfigured = true;
+        window.gtag('config', GA_MEASUREMENT_ID, {
+          allow_google_signals: false,
+          allow_ad_personalization_signals: false
+        });
+      }
+      if (c.ads && !window.__frobelAdsConfigured) {
+        window.__frobelAdsConfigured = true;
+        window.gtag('config', ADS_ID, { allow_ad_personalization_signals: false });
+      }
+    } else if (typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+      });
+    }
+    if (!c.stat || !c.ads) removeCookies(c);
   }
 
   function buildBanner() {
@@ -71,21 +119,32 @@ function trackEvent(name, params) {
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-label', 'Datenschutz-Einstellungen');
     el.innerHTML =
-      '<h2>Statistik erlauben?</h2>' +
-      '<p>Mit Ihrer Zustimmung messen wir mit Google Analytics, welche Seiten und Kontaktwege ' +
-      '(WhatsApp, Telefon, Anfrage) genutzt werden. Dabei werden Cookies gesetzt und Daten an Google ' +
+      '<h2>Ihre Datenschutz-Einstellungen</h2>' +
+      '<p>Mit Ihrer Zustimmung nutzen wir Google-Dienste. Dabei werden Cookies gesetzt und Daten an Google ' +
       'übertragen. Ohne Zustimmung wird nichts geladen. Mehr in der ' +
       '<a href="datenschutz.html#statistik">Datenschutzerklärung</a>.</p>' +
+      '<label class="consent-opt"><input type="checkbox" data-opt="stat">' +
+      '<span><strong>Statistik (Google Analytics)</strong>Welche Seiten und Kontaktwege (WhatsApp, Telefon, Anfrage) genutzt werden.</span></label>' +
+      '<label class="consent-opt"><input type="checkbox" data-opt="ads">' +
+      '<span><strong>Werbung (Google Ads)</strong>Messung, ob eine Anzeige zu einer Anfrage geführt hat. Keine personalisierte Werbung.</span></label>' +
       '<div class="consent-actions">' +
-      '<button type="button" class="btn consent-btn" data-consent="denied">Ablehnen</button>' +
-      '<button type="button" class="btn consent-btn" data-consent="granted">Zustimmen</button>' +
+      '<button type="button" class="btn consent-btn" data-consent="none">Alle ablehnen</button>' +
+      '<button type="button" class="btn consent-btn" data-consent="all">Alle zustimmen</button>' +
+      '<button type="button" class="btn consent-btn consent-save" data-consent="custom">Auswahl speichern</button>' +
       '</div>';
     el.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-consent]');
       if (!b) return;
-      var value = b.getAttribute('data-consent');
-      writeConsent(value);
-      if (value === 'granted') loadAnalytics(); else stopAnalytics();
+      var v = b.getAttribute('data-consent');
+      var c;
+      if (v === 'all') c = { stat: true, ads: true };
+      else if (v === 'none') c = { stat: false, ads: false };
+      else c = {
+        stat: !!el.querySelector('[data-opt="stat"]').checked,
+        ads: !!el.querySelector('[data-opt="ads"]').checked
+      };
+      writeConsent(c);
+      applyConsent(c);
       el.hidden = true;
     });
     document.body.appendChild(el);
@@ -94,6 +153,9 @@ function trackEvent(name, params) {
 
   function showBanner(focus) {
     if (!banner) banner = buildBanner();
+    // Haken zeigen die aktuelle Auswahl (bei erstem Besuch: nichts angehakt)
+    banner.querySelector('[data-opt="stat"]').checked = frobelConsent.stat;
+    banner.querySelector('[data-opt="ads"]').checked = frobelConsent.ads;
     banner.hidden = false;
     if (focus) {
       var first = banner.querySelector('button');
@@ -102,10 +164,9 @@ function trackEvent(name, params) {
   }
 
   function init() {
-    if (!GA_MEASUREMENT_ID) return;
     var consent = readConsent();
-    if (consent === 'granted') loadAnalytics();
-    else if (consent !== 'denied') showBanner(false);
+    if (consent) applyConsent(consent);
+    else showBanner(false);
 
     document.querySelectorAll('[data-cookie-settings]').forEach(function (a) {
       a.addEventListener('click', function (e) {

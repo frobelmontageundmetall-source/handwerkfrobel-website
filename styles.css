@@ -409,9 +409,14 @@ footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:
 }
 .consent[hidden]{display:none}
 .consent h2{font-family:var(--font-display);font-size:18px;font-weight:700;margin:0 0 8px}
-.consent p{margin:0 0 16px;color:var(--muted-inv)}
+.consent p{margin:0 0 14px;color:var(--muted-inv)}
 .consent a{color:var(--fg-inv);text-underline-offset:3px}
-.consent-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.consent{max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto}
+.consent-opt{display:flex;gap:12px;align-items:flex-start;margin:0 0 12px;color:var(--muted-inv);font-size:14px;line-height:1.45;cursor:pointer}
+.consent-opt input{flex:none;width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent-bright)}
+.consent-opt strong{display:block;color:var(--fg-inv);font-weight:600}
+.consent-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.consent-save{grid-column:1/-1}
 .consent-btn{
   justify-content:center;padding-inline:12px;min-width:0;
   background:var(--ink-3);color:var(--fg-inv);border:1px solid var(--muted-inv);
