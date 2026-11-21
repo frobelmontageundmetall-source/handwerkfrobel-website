@@ -378,6 +378,7 @@ footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:
   .nav-links a{padding:12px 14px;font-size:16px}
   .nav-cta{margin-left:0;margin-top:6px;justify-content:center}
   .hero-grid,.check-cols,.split{grid-template-columns:1fr}
+  .hero-media{display:none}
   .features{grid-template-columns:1fr 1fr}
   .refs,.gallery,.gallery.g4{grid-template-columns:1fr 1fr}
   .form-grid{grid-template-columns:1fr}
