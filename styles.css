@@ -61,6 +61,7 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.12;text-wrap:balance;marg
 .nav-links a.active{color:var(--fg-inv);background:rgba(234,239,245,.1)}
 .nav-links a:active{color:var(--fg-inv);background:rgba(234,239,245,.14)}
 .nav-cta{margin-left:10px}
+.nav-call{display:none}
 .nav-toggle{
   display:none;margin-left:auto;background:none;border:1px solid var(--line-inv);
   border-radius:9px;padding:9px 11px;color:var(--fg-inv);cursor:pointer;font-size:17px;line-height:1;
@@ -373,7 +374,15 @@ footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:
 
 /* ---------- Mobil ---------- */
 @media (max-width:920px){
-  .nav-toggle{display:block}
+  .nav .nav-call{
+    display:inline-flex;align-items:center;gap:7px;margin-left:auto;
+    padding:9px 12px;border-radius:9px;border:1px solid var(--line-inv);
+    color:var(--fg-inv);font-weight:600;font-size:14.5px;line-height:1;text-decoration:none;border-bottom:1px solid var(--line-inv);
+  }
+  .nav-call svg{width:17px;height:17px;flex:none}
+  .nav-call:active{background:rgba(234,239,245,.12)}
+  .nav-inner{gap:10px}
+  .nav-toggle{display:block;margin-left:0}
   .nav-links{
     display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;
     background:var(--ink-2);border-bottom:1px solid var(--line-inv);padding:12px 16px 18px;gap:6px;
