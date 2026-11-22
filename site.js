@@ -193,7 +193,7 @@ function trackEvent(name, params) {
 (function () {
   function linkLocation(el) {
     if (el.classList.contains('wa-float')) return 'floating_button';
-    if (el.id === 'wa-send') return 'kontakt_formular';
+    if (el.id === 'wa-quick') return 'kontakt_schnellweg';
     if (el.closest('header')) return 'header';
     if (el.closest('footer')) return 'footer';
     if (el.closest('.hero, .page-hero')) return 'hero';
@@ -302,94 +302,63 @@ document.querySelectorAll('.copy-btn').forEach(function (btn) {
   });
 });
 
-// Anfrage-Formular: WhatsApp-Link live aufbauen, E-Mail-Text kopierbar machen
+// Kontaktformular: Versand per E-Mail über den Formular-Dienst (Web3Forms), mit Dankesmeldung
 (function () {
   var form = document.getElementById('anfrage-form');
   if (!form) return;
-  var waLink = document.getElementById('wa-send');
-  var mailCopy = document.getElementById('mail-copy');
-  var mailStatus = document.getElementById('mail-status');
+  var status = document.getElementById('form-status');
+  var btn = form.querySelector('button[type="submit"]');
+  var started = false;
 
-  function buildText() {
-    var get = function (name) {
-      var f = form.elements[name];
-      return f && f.value ? f.value.trim() : '';
-    };
-    var leistungen = Array.prototype.filter.call(
-      form.querySelectorAll('input[name="leistung"]:checked'), function () { return true; }
-    ).map(function (c) { return c.value; });
-    var objekt = form.querySelector('input[name="objekt"]:checked');
-    var zustand = form.querySelector('input[name="zustand"]:checked');
-
-    var lines = ['Hallo Handwerkfrobel, ich habe eine Projektanfrage:', ''];
-    if (leistungen.length) lines.push('Leistung: ' + leistungen.join(', '));
-    if (get('flaeche')) lines.push('Fläche: ca. ' + get('flaeche') + ' m²');
-    if (objekt) lines.push('Objekt: ' + objekt.value);
-    if (zustand) lines.push('Bauzustand: ' + zustand.value);
-    if (get('ort')) lines.push('Ort/Stadtteil: ' + get('ort'));
-    if (get('beschreibung')) lines.push('', 'Beschreibung: ' + get('beschreibung'));
-    var who = [];
-    if (get('name')) who.push(get('name'));
-    if (get('tel')) who.push('Tel: ' + get('tel'));
-    if (get('email')) who.push('E-Mail: ' + get('email'));
-    if (who.length) lines.push('', who.join(' · '));
-    return lines.join('\n');
+  function say(msg, ok) {
+    if (!status) return;
+    status.textContent = msg;
+    status.className = 'form-status ' + (ok ? 'ok' : 'err');
+    status.hidden = false;
   }
 
-  var waUrl = 'https://wa.me/4915142814446';
+  form.addEventListener('input', function () {
+    if (started) return;
+    started = true;
+    trackEvent('form_start', { form_id: 'anfrage-form' });
+  });
 
-  function refresh() {
-    waUrl = 'https://wa.me/4915142814446?text=' + encodeURIComponent(buildText());
-  }
-  form.addEventListener('input', refresh);
-  form.addEventListener('change', refresh);
-  refresh();
-
-  form.addEventListener('submit', function (e) { e.preventDefault(); });
-
-  // Pflichtangaben (im Formular mit * markiert): Leistung, Objekt, Beschreibung
-  function formComplete() {
-    var hasLeistung = form.querySelectorAll('input[name="leistung"]:checked').length > 0;
-    var hasObjekt = !!form.querySelector('input[name="objekt"]:checked');
-    var desc = form.elements['beschreibung'];
-    return hasLeistung && hasObjekt && !!(desc && desc.value.trim());
-  }
-
-  function trackSubmit(method) {
-    if (!formComplete()) return;
-    trackEvent('contact_form_submit', {
-      form_id: 'anfrage-form',
-      method: method,
-      transport_type: 'beacon'
-    });
-  }
-
-  // WhatsApp-Weg: Im HTML bleibt die schlichte Adresse stehen. Die Nachricht mit den Formulardaten
-  // wird erst beim Klick geöffnet, damit sie nicht in automatisch erfasste Link-Adressen gelangt.
-  if (waLink) {
-    waLink.addEventListener('click', function (e) {
-      trackSubmit('whatsapp');
-      e.preventDefault();
-      if (e.ctrlKey || e.metaKey || e.shiftKey) window.open(waUrl, '_blank', 'noopener');
-      else window.location.href = waUrl;
-    });
-  }
-
-  if (mailCopy) {
-    mailCopy.addEventListener('click', function () {
-      var text = buildText();
-      function done() {
-        if (mailStatus) mailStatus.textContent = 'Anfrage kopiert — einfach in eine E-Mail an info@handwerkfrobel.de einfügen.';
-        // E-Mail-Weg: erst nach erfolgreichem Kopieren zaehlen
-        trackSubmit('email');
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done).catch(function () {
-          if (mailStatus) mailStatus.textContent = 'Kopieren nicht möglich — bitte Text markieren und manuell kopieren.';
-        });
-      }
-    });
-  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = form.elements['message'];
+    var contact = form.elements['kontakt'];
+    if (!msg.value.trim() || !contact.value.trim()) {
+      say('Bitte tragen Sie Ihre Nachricht und eine Telefonnummer oder E-Mail-Adresse ein.', false);
+      return;
+    }
+    var leistungen = Array.prototype.map.call(
+      form.querySelectorAll('input[name="leistung"]:checked'), function (c) { return c.value; }
+    ).join(', ');
+    var data = new FormData(form);
+    data.delete('leistung');
+    data.append('Leistung', leistungen || '(keine Angabe)');
+    var em = /@/.test(contact.value) ? contact.value.trim() : '';
+    if (em) data.set('email', em);
+    btn.disabled = true;
+    btn.textContent = 'Wird gesendet …';
+    fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success, j: j }; }); })
+      .then(function (res) {
+        if (res.ok) {
+          trackEvent('contact_form_submit', { form_id: 'anfrage-form', method: 'mail', transport_type: 'beacon' });
+          form.reset();
+          say('Danke, Ihre Anfrage ist bei uns angekommen. Wir melden uns in der Regel innerhalb von 24 Stunden.', true);
+          btn.textContent = 'Gesendet';
+        } else {
+          throw new Error('send failed');
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = 'Anfrage senden';
+        say('Das hat leider nicht geklappt. Bitte schreiben Sie uns per WhatsApp oder an info@handwerkfrobel.de.', false);
+      });
+  });
 })();
 
 // PU-Check (pu-boden.html): Kurzformular aufklappen, per #pu-check direkt geöffnet (QR-Code Broschüre)

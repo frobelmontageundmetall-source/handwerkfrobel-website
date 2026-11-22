@@ -315,6 +315,10 @@ footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:
 .choice:has(input:checked){border-color:var(--accent);background:rgba(194,105,31,.07)}
 .form-actions{display:flex;flex-wrap:wrap;gap:13px;align-items:center;margin-top:26px}
 .form-note{font-size:13.5px;color:var(--muted);margin-top:14px}
+.form-status{font-weight:600;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.form-status.ok{color:#14532d;background:#e7f6ec;border-color:#9fd5b1}
+.form-status.err{color:#7f1d1d;background:#fdecec;border-color:#f0b4b4}
+.form-status[hidden]{display:none}
 .contact-rows{display:flex;flex-direction:column;gap:14px}
 .contact-row{
   display:flex;align-items:center;gap:14px;padding:16px 18px;

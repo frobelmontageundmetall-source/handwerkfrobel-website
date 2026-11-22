@@ -49,7 +49,7 @@
   <div class="container">
     <p class="eyebrow">Beratung · Aufmaß · Angebot</p>
     <h1>Kontakt, Angebot &amp; Termin</h1>
-    <p class="sub">Tragen Sie die wichtigsten Daten zu Ihrem Projekt ein — je genauer Ihre Angaben, desto präziser unsere Einschätzung. Die Anfrage senden Sie dann bequem per WhatsApp, oder Sie kopieren den Text für Ihre E-Mail.</p>
+    <p class="sub">Schreiben Sie uns per WhatsApp, rufen Sie an oder nutzen Sie das Formular. Wir melden uns in der Regel innerhalb von 24 Stunden.</p>
   </div>
 </section>
 
@@ -57,75 +57,51 @@
   <div class="container">
     <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(24px,4vw,48px);align-items:start" class="kontakt-grid">
 
-      <form id="anfrage-form" class="form-card">
-        <div class="form-grid">
-          <div class="field fw">
-            <label>Gewünschte Leistung(en) *</label>
-            <div class="choice-grid">
-              <label class="choice"><input type="checkbox" name="leistung" value="Innenausbau / Trockenbau"> Innenausbau / Trockenbau</label>
-              <label class="choice"><input type="checkbox" name="leistung" value="Bodenverlegung (Vinyl, Laminat, Parkett)"> Bodenverlegung (Vinyl, Laminat, Parkett)</label>
-              <label class="choice"><input type="checkbox" name="leistung" value="Fugenlose Bodenbeschichtung (PU)"> Fugenlose Bodenbeschichtung (PU)</label>
-              <label class="choice"><input type="checkbox" name="leistung" value="Betonoptik / Spachteltechnik"> Betonoptik / Spachteltechnik</label>
-              <label class="choice"><input type="checkbox" name="leistung" value="Innenfenster / Oberlichter"> Innenfenster / Oberlichter</label>
-              <label class="choice"><input type="checkbox" name="leistung" value="Schiebetürsysteme"> Schiebetürsysteme</label>
-              <label class="choice"><input type="checkbox" name="leistung" value="Renovierung / Reparaturen"> Renovierung / Reparaturen</label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="flaeche">Fläche in m² (ca.)</label>
-            <input type="number" id="flaeche" name="flaeche" min="1" placeholder="z. B. 60" inputmode="numeric">
-          </div>
-
-          <div class="field">
-            <label for="ort">Ort / Stadtteil</label>
-            <input type="text" id="ort" name="ort" placeholder="z. B. Köln-Rodenkirchen">
-          </div>
-
-          <div class="field">
-            <label>Objekt *</label>
-            <div class="choice-grid" style="grid-template-columns:1fr">
-              <label class="choice"><input type="radio" name="objekt" value="Haus"> Haus</label>
-              <label class="choice"><input type="radio" name="objekt" value="Wohnung"> Wohnung</label>
-              <label class="choice"><input type="radio" name="objekt" value="Gewerbe"> Gewerbe</label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Bauzustand</label>
-            <div class="choice-grid" style="grid-template-columns:1fr">
-              <label class="choice"><input type="radio" name="zustand" value="Rohbau"> Rohbau</label>
-              <label class="choice"><input type="radio" name="zustand" value="Neubau"> Neubau</label>
-              <label class="choice"><input type="radio" name="zustand" value="Altbau"> Altbau</label>
-              <label class="choice"><input type="radio" name="zustand" value="Sanierung"> Sanierung</label>
-            </div>
-          </div>
-
-          <div class="field fw">
-            <label for="beschreibung">Beschreibung des Projekts * <span class="hint">— je genauer, desto besser können wir einschätzen</span></label>
-            <textarea id="beschreibung" name="beschreibung" placeholder="Was soll gemacht werden? Aktueller Zustand, Wunschtermin, Besonderheiten …"></textarea>
-          </div>
-
-          <div class="field">
-            <label for="name">Ihr Name</label>
-            <input type="text" id="name" name="name" autocomplete="name">
-          </div>
-          <div class="field">
-            <label for="tel">Telefonnummer</label>
-            <input type="tel" id="tel" name="tel" autocomplete="tel">
-          </div>
-          <div class="field fw">
-            <label for="email">E-Mail-Adresse</label>
-            <input type="email" id="email" name="email" autocomplete="email">
-          </div>
+      <div class="form-card">
+        <h2 style="font-family:var(--font-display);font-size:20px;line-height:1.2;margin:0 0 6px;color:var(--ink)">Der schnellste Weg</h2>
+        <p class="form-note" style="margin:0 0 14px">Ein Klick, Ihr Projekt in einem Satz, Fotos gleich dazu.</p>
+        <div class="form-actions" style="margin:0 0 26px">
+          <a id="wa-quick" class="btn btn-wa" href="https://wa.me/4915142814446?text=Hallo%2C%20ich%20habe%20eine%20Anfrage%20zu%20meinem%20Projekt.%20Ich%20sende%20gleich%20Fotos." rel="noopener">Per WhatsApp schreiben</a>
+          <a class="btn btn-ghost" href="tel:+4915142814446">Anrufen</a>
         </div>
 
-        <div class="form-actions">
-          <a id="wa-send" class="btn btn-wa" href="https://wa.me/4915142814446" rel="noopener">Per WhatsApp senden</a>
-          <button type="button" id="mail-copy" class="btn btn-ghost">Text für E-Mail kopieren</button>
-        </div>
-        <p class="form-note" id="mail-status">Der WhatsApp-Button übernimmt Ihre Angaben automatisch. Für E-Mail: Text kopieren und an <strong>info@handwerkfrobel.de</strong> senden.</p>
-      </form>
+        <h2 style="font-family:var(--font-display);font-size:20px;line-height:1.2;margin:0 0 6px;color:var(--ink)">Oder per Formular</h2>
+        <p class="form-note" style="margin:0 0 14px">Wir antworten in der Regel innerhalb von 24 Stunden.</p>
+        <form id="anfrage-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="782ab164-5df0-4936-ac47-3d411521baf6">
+          <input type="hidden" name="subject" value="Neue Anfrage über handwerkfrobel.de">
+          <input type="hidden" name="from_name" value="Website Handwerk Frobel">
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
+          <div class="form-grid">
+            <div class="field fw">
+              <label>Worum geht es? <span class="hint">— optional</span></label>
+              <div class="choice-grid">
+                <label class="choice"><input type="checkbox" name="leistung" value="Fugenloser PU-Boden"> Fugenloser PU-Boden</label>
+                <label class="choice"><input type="checkbox" name="leistung" value="Betonoptik / Spachteltechnik"> Betonoptik / Spachteltechnik</label>
+                <label class="choice"><input type="checkbox" name="leistung" value="Trockenbau"> Trockenbau</label>
+                <label class="choice"><input type="checkbox" name="leistung" value="Bodenverlegung"> Bodenverlegung</label>
+              </div>
+            </div>
+            <div class="field fw">
+              <label for="message">Ihr Projekt in zwei Sätzen * <span class="hint">— Fotos können Sie uns danach per WhatsApp oder E-Mail schicken</span></label>
+              <textarea id="message" name="message" required placeholder="z. B. Bad, ca. 6 m², alte Fliesen sollen fugenlos werden"></textarea>
+            </div>
+            <div class="field">
+              <label for="name">Ihr Name</label>
+              <input type="text" id="name" name="name" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="kontakt">Telefon oder E-Mail *</label>
+              <input type="text" id="kontakt" name="kontakt" required autocomplete="tel" placeholder="So erreichen wir Sie">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Anfrage senden</button>
+          </div>
+          <p class="form-note">Mit dem Absenden stimmen Sie zu, dass wir Ihre Angaben zur Bearbeitung der Anfrage verwenden. Der Versand läuft über den Dienst Web3Forms. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+          <p id="form-status" class="form-note form-status" role="status" aria-live="polite" hidden></p>
+        </form>
+      </div>
 
       <div class="contact-rows">
         <div class="contact-row">
