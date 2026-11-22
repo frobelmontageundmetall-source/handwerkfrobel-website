@@ -119,23 +119,24 @@ function trackEvent(name, params) {
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-label', 'Datenschutz-Einstellungen');
     el.innerHTML =
-      '<h2>Ihre Datenschutz-Einstellungen</h2>' +
-      '<p>Mit Ihrer Zustimmung nutzen wir Google-Dienste. Dabei werden Cookies gesetzt und Daten an Google ' +
-      'übertragen. Ohne Zustimmung wird nichts geladen. Mehr in der ' +
-      '<a href="datenschutz.html#statistik">Datenschutzerklärung</a>.</p>' +
+      '<p>Cookies &amp; Google-Dienste (Analytics, Ads) zur Erfolgsmessung. ' +
+      '<a href="datenschutz.html#statistik">Datenschutz</a></p>' +
+      '<div class="consent-opts" hidden>' +
       '<label class="consent-opt"><input type="checkbox" data-opt="stat">' +
       '<span><strong>Statistik (Google Analytics)</strong>Welche Seiten und Kontaktwege (WhatsApp, Telefon, Anfrage) genutzt werden.</span></label>' +
       '<label class="consent-opt"><input type="checkbox" data-opt="ads">' +
       '<span><strong>Werbung (Google Ads)</strong>Messung, ob eine Anzeige zu einer Anfrage geführt hat. Keine personalisierte Werbung.</span></label>' +
+      '</div>' +
       '<div class="consent-actions">' +
-      '<button type="button" class="btn consent-btn" data-consent="none">Alle ablehnen</button>' +
-      '<button type="button" class="btn consent-btn" data-consent="all">Alle zustimmen</button>' +
-      '<button type="button" class="btn consent-btn consent-save" data-consent="custom">Auswahl speichern</button>' +
+      '<button type="button" class="btn consent-btn" data-consent="all">Zustimmen</button>' +
+      '<button type="button" class="btn consent-btn" data-consent="more">Einstellungen</button>' +
+      '<button type="button" class="btn consent-btn" data-consent="none">Ablehnen</button>' +
       '</div>';
     el.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-consent]');
       if (!b) return;
       var v = b.getAttribute('data-consent');
+      if (v === 'more') { expandBanner(el); return; }
       var c;
       if (v === 'all') c = { stat: true, ads: true };
       else if (v === 'none') c = { stat: false, ads: false };
@@ -151,12 +152,20 @@ function trackEvent(name, params) {
     return el;
   }
 
+  function expandBanner(el) {
+    el.querySelector('.consent-opts').hidden = false;
+    var m = el.querySelector('[data-consent="more"]');
+    if (m) { m.setAttribute('data-consent', 'custom'); m.textContent = 'Auswahl speichern'; }
+    el.classList.add('consent-open');
+  }
+
   function showBanner(focus) {
     if (!banner) banner = buildBanner();
     // Haken zeigen die aktuelle Auswahl (bei erstem Besuch: nichts angehakt)
     banner.querySelector('[data-opt="stat"]').checked = frobelConsent.stat;
     banner.querySelector('[data-opt="ads"]').checked = frobelConsent.ads;
     banner.hidden = false;
+    if (focus) expandBanner(banner);
     if (focus) {
       var first = banner.querySelector('button');
       if (first) first.focus();
