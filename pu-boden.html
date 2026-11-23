@@ -24,6 +24,15 @@
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="styles.css">
 <script src="site.js" defer></script>
+<style>
+  .pu-profile-detail { margin: 28px 0 0; }
+  .pu-profile-detail img { display: block; width: 100%; max-height: 620px; object-fit: cover; object-position: center 70%; border-radius: 16px; }
+  .pu-project-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 26px; }
+  .pu-project-steps figure { margin: 0; }
+  .pu-project-steps img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
+  .pu-project-steps figcaption, .pu-profile-detail figcaption { padding-top: 8px; }
+  @media (max-width: 680px) { .pu-project-steps { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
 
@@ -63,7 +72,7 @@
   </div>
 </section>
 
-<section class="section on-light">
+<section class="section on-light" id="dachgeschoss-lichtprofil" style="scroll-margin-top:88px">
   <div class="container">
     <div class="split">
       <div>
@@ -73,38 +82,38 @@
         <p class="lead" style="margin-bottom:24px">Fugenlose PU-Böden schaffen ruhige, großzügige Flächen. In diesem Wohnbereich trifft eine matte PU-Oberfläche auf Teppichboden, ein integriertes Lichtprofil und präzise ausgeführte Übergänge.</p>
         <a class="btn btn-wa" href="https://wa.me/4915142814446?text=Anfrage%20fugenloser%20PU-Boden%3A" rel="noopener">WhatsApp Anfrage</a>
       </div>
-      <img src="img/dg-2.jpg" alt="Matter PU-Boden mit präzisem Übergang zum Teppichboden im Wohnbereich">
+      <img src="img/pu-dachgeschoss-galerie-website.webp" alt="Matter PU-Boden und Teppich im Dachgeschoss aus der Galerieperspektive">
     </div>
+    <figure class="pu-profile-detail">
+      <img src="img/pu-lichtprofil-detail-website.webp" alt="Bodennahe Aufnahme des Lichtprofils im Teppich parallel zum fugenlosen PU-Boden" loading="lazy">
+      <figcaption>Das Lichtprofil liegt im Teppich und folgt der Kante zum fugenlosen PU-Boden.</figcaption>
+    </figure>
   </div>
 </section>
 
-<section class="section on-dark">
+<section class="section on-dark" id="fliesen-zu-pu" style="scroll-margin-top:88px">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow">Referenz</p>
       <h2 class="h2">Von alten Fliesen zu fugenlosen Premium-Oberflächen</h2>
+      <p class="ref-meta" style="margin-bottom:14px">Köln-Süd · ca. 100 m² · Einfamilienhaus</p>
+      <p class="lead">Der vorhandene Fliesenbelag wurde angeschliffen, gereinigt und nivelliert. Darauf entstand ein mineralbeiger, seidenmatt versiegelter PU-Boden.</p>
     </div>
-    <div class="split">
-      <img src="img/pu-4.jpg" alt="Alter Fliesenbelag wird angeschliffen und abgesaugt, Vorbereitung für einen fugenlosen Boden">
-      <div>
-        <p class="ref-meta" style="margin-bottom:14px">Köln-Süd · ca. 100 m² · Einfamilienhaus</p>
-        <p class="lead" style="margin-bottom:24px">Der alte Fliesenbelag wird fachgerecht angeschliffen und gereinigt. So entsteht die Basis für einen fugenlosen Boden, ohne den alten Belag vollständig zurückzubauen.</p>
-        <a class="btn btn-wa" href="https://wa.me/4915142814446?text=Anfrage%20fugenloser%20PU-Boden%3A" rel="noopener">WhatsApp Anfrage</a>
-      </div>
+    <div class="pu-project-steps">
+      <figure>
+        <img src="img/pu-4.jpg" alt="Alter Fliesenbelag während der Vorbereitung" loading="lazy">
+        <figcaption>Altfliesen vorbereiten</figcaption>
+      </figure>
+      <figure>
+        <img src="img/pu-9.jpg" alt="Nivelliermasse auf dem vorbereiteten Fliesenbelag" loading="lazy">
+        <figcaption>Untergrund nivellieren</figcaption>
+      </figure>
+      <figure>
+        <img src="img/pu-5.jpg" alt="Fertiger, seidenmatter PU-Boden im Einfamilienhaus" loading="lazy">
+        <figcaption>Fertiger PU-Boden</figcaption>
+      </figure>
     </div>
-  </div>
-</section>
-
-<section class="section on-dark" style="padding-top:0">
-  <div class="container">
-    <div class="split">
-      <div>
-        <p class="eyebrow">Ausführung</p>
-        <h2 class="h2">Untergrundvorbereitung</h2>
-        <p class="lead" style="color:var(--muted-inv);margin-bottom:24px">Ein fachgerecht bearbeiteter Untergrund und die anschließende Nivellierung schaffen die Ausgangslage für eine fugenlose Bodenbeschichtung.</p>
-      </div>
-      <img src="img/pu-9.jpg" alt="Nivellierung des Untergrunds auf altem Fliesenbelag als Vorbereitung für die fugenlose Bodenbeschichtung">
-    </div>
+    <a class="btn btn-wa" href="https://wa.me/4915142814446?text=Anfrage%20fugenloser%20PU-Boden%3A" rel="noopener">WhatsApp Anfrage</a>
   </div>
 </section>
 
@@ -162,11 +171,7 @@
       <p class="lead">Eindrücke aus aktuellen PU-Projekten in Köln und Umgebung.</p>
     </div>
     <div class="gallery">
-      <img src="img/dg-4.jpg" alt="Übergang von PU-Boden zu Teppich mit integriertem Lichtprofil" loading="lazy">
       <img src="img/dg-5.jpg" alt="Küche des Dachgeschoss-Projekts mit PU-Boden im Sonnenlicht" loading="lazy">
-      <img src="img/dg-6.jpg" alt="Frisch beschichtete PU-Fläche am Abend" loading="lazy">
-      <img src="img/pu-5.jpg" alt="Fugenloser PU-Boden aus dem Einfamilienhaus-Projekt" loading="lazy">
-      <img src="img/pu-6.jpg" alt="Seidenmatt versiegelte PU-Fläche im Einfamilienhaus" loading="lazy">
       <img src="img/pu-11.jpg" alt="Fugenloser Boden mit lebendiger, marmorierter Oberfläche in warmem Grau" loading="lazy">
     </div>
   </div>
