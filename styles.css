@@ -446,6 +446,31 @@ footer{background:var(--ink);border-top:1px solid var(--line-inv);padding-block:
 }
 .consent-btn:active{border-color:var(--fg-inv)}
 
+/* Feste Kontaktleiste unten (nur Handy) */
+.mbar{display:none}
+@media (max-width:920px){
+  :root{--mbar-h:60px}
+  .mbar{
+    display:grid;grid-template-columns:1fr 1fr 1.25fr;
+    position:fixed;left:0;right:0;bottom:0;z-index:70;
+    height:calc(var(--mbar-h) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+    background:var(--ink-2);border-top:1px solid var(--line-inv);
+    box-shadow:0 -10px 28px -14px rgba(0,0,0,.6);
+  }
+  .mbar-item{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:var(--fg-inv);text-decoration:none;font-size:13px;font-weight:600;line-height:1;border-bottom:0;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mbar-item svg{width:22px;height:22px;flex:none}
+  .mbar-item:active{background:rgba(234,239,245,.12)}
+  .mbar-wa{background:#1FAD56;color:#fff}
+  .mbar-wa:active{background:#25C263}
+  .has-mbar{padding-bottom:calc(var(--mbar-h) + env(safe-area-inset-bottom,0px))}
+  .has-mbar .wa-float{display:none}
+  .has-mbar .consent{bottom:calc(var(--mbar-h) + 8px + env(safe-area-inset-bottom,0px))}
+}
+
 /* Telefon-Links */
 a[href^="tel:"]{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s}
 @media (hover:hover) and (pointer:fine){

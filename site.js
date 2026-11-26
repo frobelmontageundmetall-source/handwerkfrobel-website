@@ -193,6 +193,7 @@ function trackEvent(name, params) {
 (function () {
   function linkLocation(el) {
     if (el.classList.contains('wa-float')) return 'floating_button';
+    if (el.closest('.mbar')) return 'bottom_bar';
     if (el.id === 'wa-quick') return 'kontakt_schnellweg';
     if (el.closest('header')) return 'header';
     if (el.closest('footer')) return 'footer';
@@ -212,6 +213,11 @@ function trackEvent(name, params) {
         link_location: linkLocation(a),
         transport_type: 'beacon'
       });
+    } else if (/^mailto:/i.test(href) && a.closest('.mbar')) {
+      trackEvent('email_click', {
+        link_location: 'bottom_bar',
+        transport_type: 'beacon'
+      });
     } else if (/^https?:\/\/(wa\.me|api\.whatsapp\.com|web\.whatsapp\.com)\b/i.test(href) || /^whatsapp:/i.test(href)) {
       // Nur die Adresse ohne Query senden (der Nachrichtentext kann Eingaben aus dem Formular enthalten).
       trackEvent('whatsapp_click', {
@@ -221,6 +227,29 @@ function trackEvent(name, params) {
       });
     }
   });
+})();
+
+// Feste Kontaktleiste unten (nur Handy, per CSS): E-Mail, Telefon, WhatsApp
+(function () {
+  function build() {
+    if (document.querySelector('.mbar')) return;
+    var wa = document.querySelector('a.wa-float');
+    var waHref = wa ? wa.getAttribute('href') : 'https://wa.me/4915142814446';
+    var bar = document.createElement('nav');
+    bar.className = 'mbar';
+    bar.setAttribute('aria-label', 'Direkt Kontakt aufnehmen');
+    bar.innerHTML =
+      '<a class="mbar-item" href="mailto:info@handwerkfrobel.de" aria-label="E-Mail schreiben">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>E-Mail</span></a>' +
+      '<a class="mbar-item" href="tel:+4915142814446" aria-label="Anrufen: +49 151 42814446">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>Telefon</span></a>' +
+      '<a class="mbar-item mbar-wa" href="' + waHref + '" rel="noopener" aria-label="Per WhatsApp anfragen">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.3 0-2.6-.3-3.7-.8L3 21l1.8-5.8A8.5 8.5 0 1 1 21 11.5z"/></svg><span>WhatsApp</span></a>';
+    document.body.appendChild(bar);
+    document.body.classList.add('has-mbar');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
+  else build();
 })();
 
 // Mobile Navigation
